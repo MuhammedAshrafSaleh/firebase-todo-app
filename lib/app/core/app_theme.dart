@@ -12,11 +12,18 @@ class AppTheme {
   /// Dark Colors
   static Color primaryDark = const Color(0xFF141922);
   static Color bodyColorblack = const Color(0xFF060E1E);
-  static ThemeData lightTheme = ThemeData(
+  static ThemeData lightTheme = itThemeData(
     primaryColor: primaryLight,
     scaffoldBackgroundColor: bodyColorWhite,
     appBarTheme: AppBarTheme(
       backgroundColor: primaryLight,
+    ),
+    textTheme: TextTheme(
+      titleLarge: TextStyle(
+        color: whiteColor,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
     ),
   );
 }

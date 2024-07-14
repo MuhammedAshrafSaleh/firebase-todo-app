@@ -8,7 +8,13 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height * 0.2,
+        title: Text(
+          'To-Do List',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ),
     );
   }
 }
