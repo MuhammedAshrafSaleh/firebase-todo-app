@@ -9,14 +9,14 @@ void main() {
 
 class Todo extends StatelessWidget {
   const Todo({super.key});
- 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: HomeScreen.routeName,
       routes: {
-        HomeScreen.routeName : (context) => const HomeScreen(),
+        HomeScreen.routeName: (context) => const HomeScreen(),
       },
       theme: AppTheme.lightTheme,
     );
