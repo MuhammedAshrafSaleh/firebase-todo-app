@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void showAddTaskBottomSheet() {
-    showModalBottomSheet(
+    showDialog(
         context: context,
         builder: (BuildContext context) {
           return const AddTaskBottomSheet();

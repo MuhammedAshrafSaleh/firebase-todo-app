@@ -1,21 +1,27 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/app/core/app_theme.dart';
+import 'package:todo_app/app/provider/task_proivder.dart';
 
 import 'task_item_widget.dart';
 
 class TaskListTab extends StatelessWidget {
-  const TaskListTab({super.key});
+  TaskListTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var taskProvider = Provider.of<TaskProvider>(context);
+    if (taskProvider.taskList.isEmpty) {
+      taskProvider.getAllTasks();
+    }
     return Column(
       children: [
         EasyDateTimeLine(
-          initialDate: DateTime.now(),
+          initialDate: taskProvider.selectedDate,
           // locale: 'ar',
           onDateChange: (selectedDate) {
-            //`selectedDate` the new date selected.
+            taskProvider.changeSelectedDate(selectedDate);
           },
           headerProps: const EasyHeaderProps(
             monthPickerType: MonthPickerType.switcher,
@@ -31,26 +37,15 @@ class TaskListTab extends StatelessWidget {
             ),
           ),
         ),
-        // CalendarTimeline(
-        //   initialDate: DateTime.now(),
-        //   firstDate: DateTime(1900, DateTime.now().month, DateTime.now().day),
-        //   lastDate: DateTime(2100, 11, 20),
-        //   onDateSelected: (date) => print(date),
-        //   leftMargin: 20,
-        //   monthColor: AppTheme.primaryDark,
-        //   dayColor: AppTheme.primaryDark,
-        //   activeDayColor: AppTheme.whiteColor,
-        //   activeBackgroundDayColor: AppTheme.primaryLight,
-        //   // selectableDayPredicate: (date) => date.day != 23, // if you need to make a disable day
-        //   selectableDayPredicate: (date) => true, // no disable days
-        //   locale: 'en_ISO',
-        //   dotColor: AppTheme.primaryDark,
-        // ),
+        const SizedBox(height: 10),
         Expanded(
           child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: 5,
-              itemBuilder: (context, index) => const TaskItem()),
+            scrollDirection: Axis.vertical,
+            itemCount: taskProvider.taskList.length,
+            itemBuilder: (context, index) => TaskItem(
+              task: taskProvider.taskList[index],
+            ),
+          ),
         ),
       ],
     );

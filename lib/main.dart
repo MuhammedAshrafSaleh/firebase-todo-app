@@ -1,13 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/app/auth/register.dart';
+import 'package:todo_app/app/provider/task_proivder.dart';
 
+import 'app/auth/login.dart';
 import 'app/core/app_theme.dart';
 import 'app/home/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const Todo());
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: 'AIzaSyAiBXd3T0vw-Gx8At1UfDXIkHGW7XXsuv0',
+      appId: '1:1057384319935:android:8f1cc2a7b2b97ac524ef0a',
+      messagingSenderId: '1057384319935',
+      projectId: 'todo-app-a0665',
+      storageBucket: 'todo-app-a0665.appspot.com',
+    ),
+  );
+  await FirebaseFirestore.instance.disableNetwork();
+  FirebaseFirestore.instance.settings =
+      const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
+  runApp(ChangeNotifierProvider(
+      create: (context) => TaskProvider(), child: const Todo()));
 }
 
 class Todo extends StatelessWidget {
@@ -17,9 +34,11 @@ class Todo extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: HomeScreen.routeName,
+      initialRoute: RegisterScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => const HomeScreen(),
+        LoginScreen.routeName : (context) =>  LoginScreen(),
+        RegisterScreen.routeName : (context) =>  RegisterScreen(),
       },
       theme: AppTheme.lightTheme,
     );
