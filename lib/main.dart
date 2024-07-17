@@ -20,9 +20,10 @@ void main() async {
       storageBucket: 'todo-app-a0665.appspot.com',
     ),
   );
-  await FirebaseFirestore.instance.disableNetwork();
-  FirebaseFirestore.instance.settings =
-      const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
+  // await FirebaseDatabase.instance.setPersistenceEnabled(true);
+  // await FirebaseFirestore.instance.disableNetwork();
+  // FirebaseFirestore.instance.settings =
+  //     const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
   runApp(ChangeNotifierProvider(
       create: (context) => TaskProvider(), child: const Todo()));
 }
