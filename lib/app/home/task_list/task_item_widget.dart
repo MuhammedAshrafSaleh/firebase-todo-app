@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/app/providers/auth_manager_provider.dart';
 
 import '../../core/app_theme.dart';
 import '../../core/firebase_utls.dart';
 import '../../models/task.dart';
-import '../../provider/task_proivder.dart';
+import '../../providers/task_proivder.dart';
+import '../../widgets/custom_dialog_widget.dart';
 
 // ignore: must_be_immutable
 class TaskItem extends StatelessWidget {
@@ -14,6 +16,7 @@ class TaskItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var taskProvider = Provider.of<TaskProvider>(context);
+    var authProvider = Provider.of<AuthManagerProvider>(context, listen: false);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Slidable(
@@ -25,10 +28,19 @@ class TaskItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               onPressed: (context) {
                 // Delete Task
-                FirebaseManager.deleteTaskFromFirestore(task)
-                    .timeout(const Duration(milliseconds: 1), onTimeout: () {
-                  taskProvider.getAllTasks();
+                FirebaseManager.deleteTaskFromFirestore(
+                  task: task,
+                  uId: authProvider.currentUser!.id!,
+                ).then((value) {
+                  print('deleted==================================');
+                  DialogUtls.showMessage(
+                      context: context, message: 'Deleted Successfully');
+                  taskProvider.getAllTasks(uId: authProvider.currentUser!.id!);
+                  print('after Dialog ==================================');
                 });
+                // .timeout(const Duration(milliseconds: 1), onTimeout: () {
+                //   taskProvider.getAllTasks(uId: authProvider.currentUser!.id!);
+                // });
               },
               backgroundColor: AppTheme.redColor,
               foregroundColor: AppTheme.whiteColor,

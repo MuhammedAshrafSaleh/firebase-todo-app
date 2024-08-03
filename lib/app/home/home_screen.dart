@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/app/auth/login.dart';
 import 'package:todo_app/app/core/app_theme.dart';
 import 'package:todo_app/app/home/settings/settings_tab.dart';
 import 'package:todo_app/app/home/task_list/task_list_tab.dart';
+import 'package:todo_app/app/providers/auth_manager_provider.dart';
+import 'package:todo_app/app/providers/task_proivder.dart';
 
 import 'task_list/add_task_widget.dart';
 
@@ -18,13 +22,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var authProvider = Provider.of<AuthManagerProvider>(context, listen: false);
+    var taskProvider = Provider.of<TaskProvider>(context);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height * 0.2,
         title: Text(
-          'To-Do List',
+          'Hi, ${authProvider.currentUser!.name!}',
           style: Theme.of(context).textTheme.titleLarge,
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                authProvider.currentUser = null;
+                taskProvider.taskList = [];
+                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+              },
+              icon: Icon(Icons.logout)),
+        ],
       ),
       body: currentIndex == 0 ? TaskListTab() : Settings(),
       bottomNavigationBar: SafeArea(
@@ -35,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             notchMargin: 12,
             child: SizedBox(
               child: BottomNavigationBar(
-                currentIndex: currentIndex,
+                 
                 onTap: (index) {
                   setState(() {
                     currentIndex = index;

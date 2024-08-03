@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/app/core/firebase_utls.dart';
 import 'package:todo_app/app/models/task.dart';
+import 'package:todo_app/app/providers/auth_manager_provider.dart';
 import 'package:todo_app/app/widgets/custom_btn.dart';
+import 'package:todo_app/app/widgets/custom_dialog_widget.dart';
 
 import '../../core/app_theme.dart';
-import '../../provider/task_proivder.dart';
+import '../../providers/task_proivder.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/date_picker.dart';
 
@@ -16,6 +17,7 @@ class AddTaskBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var taskProvider = Provider.of<TaskProvider>(context);
+    var authProvider = Provider.of<AuthManagerProvider>(context, listen: false);
     final titleController = TextEditingController();
     final descriptionController = TextEditingController();
     final dateController = TextEditingController();
@@ -82,17 +84,26 @@ class AddTaskBottomSheet extends StatelessWidget {
                       text: 'Add Task',
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          FirebaseManager.addTaskToFirestore(Task(
-                                  title: titleController.text,
-                                  description: descriptionController.text,
-                                  date: DateTime.parse(dateController.text)))
-                              .timeout(const Duration(milliseconds: 500),
-                                  onTimeout: () {});
-                          titleController.clear();
-                          descriptionController.clear();
-                          dateController.clear();
-                          taskProvider.getAllTasks();
-                          Navigator.pop(context);
+                          DialogUtls.showLoading(
+                              context: context,
+                              message: 'Task is being Loading');
+                          FirebaseManager.addTaskToFirestore(
+                            task: Task(
+                              title: titleController.text,
+                              description: descriptionController.text,
+                              date: DateTime.parse(dateController.text),
+                            ),
+                            uId: authProvider.currentUser!.id!,
+                          );
+                          DialogUtls.hideLoading(context: context);
+                          // .timeout(const Duration(milliseconds: 500),
+                          //     onTimeout: () {});
+                          // titleController.clear();
+                          // descriptionController.clear();
+                          // dateController.clear();
+                          // taskProvider.getAllTasks(
+                          //     uId: authProvider.currentUser!.id!);
+                          // Navigator.pop(context);
                         }
                       },
                     )
